@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <script src="../../static/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+    <script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+    <script src="../../static/js/sweetalert2.min.js" th:src="@{/js/sweetalert2.min.js}"></script>
+    <link rel="stylesheet" href="../../static/css/sweetalert2.min.css" th:href="@{/css/sweetalert2.min.css}">
+    <style>
+        .panel-group {
+            max-height: 770px;
+            overflow: auto;
+        }
+
+        .leftMenu {
+            margin: 10px;
+            margin-top: 5px;
+        }
+
+        .leftMenu .panel-heading {
+            font-size: 14px;
+            padding-left: 20px;
+            height: 36px;
+            line-height: 36px;
+            color: white;
+            position: relative;
+            cursor: pointer; /*转成手形图标*/
+        }
+
+        /*自定义样式*/
+        a :hover {
+            text-decoration: none;
+        }
+
+        .header {
+            width: 100%;
+            height: 100px;
+            background: url("/images/header.png");
+            /*
+                        background: url("../../static/images/header.png");
+            */
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+<!--头部-->
+<div class="header"></div>
+<div id="body">
+    <!--头部下方的一条导航栏-->
+    <nav class="navbar navbar-default">
+        <span>
+            <form action="/frontsearch" method="post" style="padding:10px">
+                <input name="search" placeholder="搜索.." required>
+                <button class="btn btn-info" type="submit" style="margin-left: 10px">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+                <span>
+                    <a href="#" style="float: right;padding-right:20px;font-size: 18px">注销</a>
+                </span>
+            </form>
+
+        </span>
+    </nav>
+    <!--侧边导航栏-->
+    <div class="row">
+        <div class="col-md-2">
+            <div class="panel-group table-responsive" role="tablist">
+                <div class="panel panel-primary leftMenu">
+                    <!-- 利用data-target指定要折叠的分组列表 -->
+                    <div class="panel-heading" id="student_manage" data-toggle="collapse" data-target="#students"
+                         role="tab">
+                        <h4 class="panel-title">
+                            学生管理
+                        </h4>
+                    </div>
+                    <!-- .panel-collapse和.collapse标明折叠元素 .in表示要显示出来 -->
+                    <div id="students" class="panel-collapse collapse in" role="tabpanel"
+                         aria-labelledby="student_manage">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <!--访问学生列表对应的方法所在的Controller-->
+                                <a href="http://localhost:8080/manager/students?currentPage=1"
+                                   target="_parent">显示所有学生信息</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="http://localhost:8080/manager/students/addition" target="_parent">添加学生</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="#">录入学生成绩</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div><!--panel end-->
+
+                <div class="panel panel-primary leftMenu">
+                    <div class="panel-heading" id="teacher_manage" data-toggle="collapse" data-target="#teachers"
+                         role="tab">
+                        <h4 class="panel-title">
+                            教师管理
+                        </h4>
+                    </div>
+                    <div id="teachers" class="panel-collapse collapse" role="tabpanel" aria-labelledby="teacher_manage">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <a href="#">显示所有教师信息</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="#">添加教师</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="#">教师授课</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="panel panel-primary leftMenu">
+                    <div class="panel-heading" id="static_manage" data-toggle="collapse" data-target="#static"
+                         role="tab">
+                        <h4 class="panel-title">
+                            统计管理
+                        </h4>
+                    </div>
+
+                    <div id="static" class="panel-collapse collapse" role="tabpanel" aria-labelledby="static_manage">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <a href="http://localhost:8080/manager/statistic">显示统计报表</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--面包屑导航栏-->
+        <div class="col-md-10">
+            <ol class="breadcrumb" id="crumbs">
+                <li><a href="http://localhost:8080/manager">学生管理</a></li>
+                <li><a href="#">显示所有学生信息</a></li>
+            </ol>
+        </div>
+
+        <div id="page" class="col-lg-10" align="center" style="margin-top: -45px;">
+            <table id="student_list" class="table table-responsive">
+                <caption class="text-center" style="color: #5bc0de;font-size: 20px;">学生列表</caption>
+                <tr>
+                    <td>学号</td>
+                    <td>姓名</td>
+                    <td>性别</td>
+                    <td>年龄</td>
+                    <td>密码</td>
+                    <td colspan="2" style="padding-left: 50px">处理</td>
+                </tr>
+
+                <tr th:each="student : ${page.getList()}">　　
+                    <td th:text="${student.sno}"></td>
+                    　
+                    <td th:text="${student.sname}"></td>
+                    <td th:text="${student.ssex}"></td>
+                    <td th:text="${student.sage}"></td>
+                    <td th:text="${student.spwd}"></td>
+                    <td colspan="2">
+                        <button class="btn btn-primary" type="button" onclick="deleteStudent(this)"><span
+                                class="glyphicon glyphicon-remove-sign" style="padding-right: 5px"></span>删除
+                        </button>
+                        <button class="btn btn-primary" type="button" onclick="updateStudent(this)"><span
+                                class="glyphicon glyphicon-edit" style="padding-right: 5px"></span>修改
+                        </button>
+                    </td>
+                </tr>
+            </table>
+
+            <ul class="pagination" style="margin-top: -10px;">
+                <li><a th:href="@{'http://localhost:8080/manager/students?currentPage=1'}">&laquo;</a></li>
+                <li><a th:href="@{'http://localhost:8080/manager/students?currentPage='+${number}}"
+                       th:each="number : ${#numbers.sequence(1,page.getPages())}" th:text="${number}"></a></li>
+                <li><a th:href="@{'http://localhost:8080/manager/students?currentPage='+${page.getPages()}}">&raquo;</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!--弹出框-->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">更新学生信息</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="sno">学号</label>
+                    <input type="text" disabled name="txt_sno" class="form-control" id="sno" placeholder="学号">
+                </div>
+                <div class="form-group">
+                    <label for="sname">姓名</label>
+                    <input type="text" name="txt_parentdepartment" class="form-control" id="sname" placeholder="姓名">
+                </div>
+                <div class="form-group">
+                    <label for="ssex">性别</label>
+                    <input type="text" name="txt_departmentlevel" class="form-control" id="ssex" placeholder="性别">
+                </div>
+                <div class="form-group">
+                    <label for="sage">年龄</label>
+                    <input type="text" name="txt_statu" class="form-control" id="sage" placeholder="年龄">
+                </div>
+                <div class="form-group">
+                    <label for="spwd">密码</label>
+                    <input type="text" name="txt_statu" class="form-control" id="spwd" placeholder="密码">
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><span
+                        class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭
+                </button>
+                <button type="button" id="btn_submit" class="btn btn-primary" data-dismiss="modal"><span
+                        class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>保存
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $(".panel-heading").click(function (e) {
+            /*切换折叠指示图标*/
+            $(this).find("span").toggleClass("glyphicon-chevron-down");
+            $(this).find("span").toggleClass("glyphicon-chevron-up");
+        });
+    });
+
+
+    //更新按钮事件
+    function updateStudent(obj) {
+        $("#myModalLabel").text("更新学生信息");
+        //获取当前行的信息
+        var sno = $(obj).parent().parent().find("td").eq(0).text();
+        var sname = $(obj).parent().parent().find("td").eq(1).text();
+        var ssex = $(obj).parent().parent().find("td").eq(2).text();
+        var sage = $(obj).parent().parent().find("td").eq(3).text();
+        var spwd = $(obj).parent().parent().find("td").eq(4).text();
+        $("#sno").val(sno);
+        $("#sname").val(sname);
+        $("#ssex").val(ssex);
+        $("#sage").val(sage);
+        $("#spwd").val(spwd);
+        $("#myModal").modal();
+    }
+
+    //更新保存按钮
+    $("#btn_submit").click(function () {
+        var sno = $("#sno").val();
+        var sname = $("#sname").val();
+        var ssex = $("#ssex").val();
+        var sage = $("#sage").val();
+        var spwd = $("#spwd").val();
+        if (sname == "" || ssex == "" || sage == "" || spwd == "") {
+            sweetAlert("哎呦......", "您输入空值了！请确保所有值不为空......", "error");
+            return;
+        }
+        $.ajax({
+            url: "/manager/students/update",
+            data: "{\"sno\":\"" + sno + "\",\"sname\":\"" + sname + "\",\"ssex\":\"" + ssex + "\",\"sage\":\"" + sage + "\",\"spwd\":\"" + spwd + "\"}",
+            type: "PUT",
+            contentType: 'application/json;charset=utf-8',
+            dataType: "JSON",
+            async: true,
+            complete: function (msg) {
+                var result = eval("(" + msg.responseText + ")");
+                if (result.code == 4) {
+                    swal({
+                        title: "更新成功！",
+                        text: "2秒后自动关闭...",
+                        type: "success",
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    setTimeout("location.reload()", 2000);
+                } else {
+                    sweetAlert("更新失败", result.message, "error");
+                }
+            }
+        });
+    });
+
+
+    //删除按钮事件
+    function deleteStudent(obj) {
+        swal({
+            title: "操作提示",      //弹出框的title
+            text: "确定删除吗？",   //弹出框里面的提示文本
+            type: "warning",        //弹出框类型
+            showCancelButton: true, //是否显示取消按钮
+            confirmButtonColor: "#DD6B55",//确定按钮颜色
+            cancelButtonText: "取消",//取消按钮文本
+            confirmButtonText: "是的，确定删除！",//确定按钮上面的文档
+            closeOnConfirm: false
+        }).then(function (isConfirm) {
+            if (!isConfirm) return;
+            var sno = $(obj).parent().parent().find("td").eq(0).text();
+            $.ajax({
+                type: "DELETE",
+                url: "/manager/students/" + sno + "/delete",
+                data: {},
+                dataType: "JSON",
+                async: true,
+                complete: function (msg) {
+                    var result = eval("(" + msg.responseText + ")");
+                    if (result.code == 2) {
+                        swal({
+                            title: "删除成功！",
+                            text: "2秒后自动关闭...",
+                            timer: 2000,
+                            type: "success",
+                            showConfirmButton: false
+                        });
+                        setTimeout("location.reload()", 2000);
+                    } else {
+                        sweetAlert("删除失败", result.message, "error");
+                    }
+                }
+            });
+        });
+    }
+</script>
+</body>
+</html>
+

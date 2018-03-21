@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8">
+    <title>登录界面</title>
+    <link rel="stylesheet" href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <script src="../../static/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+    <script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+    <style>
+        body {
+            background: url("/images/background.gif");
+            /*background: url("../static/images/background.gif");*/
+        }
+
+        #loginTable {
+            width: 425px;
+            height: 300px;
+            margin: 125px 400px auto
+        }
+
+        .font {
+            color: yellow;
+            font-size: 17px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <table id="loginTable" class="table table-bordered">
+        <th colspan="2" style="font-weight:bolder;font-size: 25px;text-align:center;color: yellow">学生管理系统</th>
+        <tr>
+            <td class="font">帐号:</td>
+            <td>
+                <input autofocus type="text" id="sno">
+                <span id="sno_message"
+                      style="padding-left:5px;font-weight: bolder;color: red;font-size: 16px"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="font">密码:</td>
+            <td>
+                <input type="password" id="spwd">
+                <span id="spwd_message"
+                      style="padding-left:5px;font-weight: bolder;color: red;font-size: 16px"></span>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="checkbox"><span style="padding-left:3px;font-size: 16px;color: yellow">7天之内免登录</span>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+                <input id="login-btn" class="btn btn-success" type="button" value="登录" style="width: 110px">
+                <input id="reset-btn" class="btn btn-success" type="button" value="重置" style="width: 110px">
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+    //学号输入框失焦进行判断
+    $("#sno").blur(function () {
+        var sno = $("#sno").val();
+        if (sno == "") {
+            $("#sno_message").html("请输入用户名");
+        } else {
+            $("#sno_message").html("");
+        }
+    })
+
+    //登录按钮点击发送AJAX请求
+    $("#login-btn").click(function () {
+        var sno = $("#sno").val();
+        if (sno == "") return;  //如果无视输入提示，则直接返回
+        var spwd = $("#spwd").val();
+        if (spwd == "") {
+            $("#sno_message").html("");
+            $("#spwd_message").html("请输入密码");  //如果密码为空，则先消去学号的提示信息，表明学号不为空，然后设置密码输入框提示
+            return;
+        }
+        //如果学号密码均不为空，消去输入框提示信息
+        $("#sno_message").html("");
+        $("#spwd_message").html("");
+        $.ajax({
+            url: "login/manager",
+            data: {
+                tno: sno,
+                tpwd: spwd
+            },
+            type: "POST",
+            dataType: "JSON",
+            async: true,
+            complete: function (msg) {
+                var result = eval("(" + msg.responseText + ")");
+                if (result.code == 0) {
+                    window.location.href = "/manager";
+                } else {
+                    $("#sno_message").html(result.message);
+                }
+            }
+        });
+    })
+</script>
+</body>
+</html>

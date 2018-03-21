@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <script src="../../static/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+    <script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+    <style>
+        .panel-group {
+            max-height: 770px;
+            overflow: auto;
+        }
+
+        .leftMenu {
+            margin: 10px;
+            margin-top: 5px;
+        }
+
+        .leftMenu .panel-heading {
+            font-size: 14px;
+            padding-left: 20px;
+            height: 36px;
+            line-height: 36px;
+            color: white;
+            position: relative;
+            cursor: pointer; /*转成手形图标*/
+        }
+
+        /*自定义样式*/
+        a :hover {
+            text-decoration: none;
+        }
+
+        .header {
+            width: 100%;
+            height: 100px;
+            background: url("/images/header.png");
+            /*
+                        background: url("../../static/images/header.png");
+            */
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+<!--头部-->
+<div class="header"></div>
+<div id="body">
+    <!--头部下方的一条导航栏-->
+    <nav class="navbar navbar-default">
+        <span>
+            <form action="/frontsearch" method="post" style="padding:10px">
+                <input name="search" placeholder="搜索.." required>
+                <button class="btn btn-info" type="submit" style="margin-left: 10px">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+                <span>
+                    <a href="#" style="float: right;padding-right:20px;font-size: 18px">注销</a>
+                </span>
+            </form>
+
+        </span>
+    </nav>
+    <!--侧边导航栏-->
+    <div class="row">
+        <div class="col-md-2">
+            <div class="panel-group table-responsive" role="tablist">
+                <div class="panel panel-primary leftMenu">
+                    <!-- 利用data-target指定要折叠的分组列表 -->
+                    <div class="panel-heading" id="student_manage" data-toggle="collapse" data-target="#students"
+                         role="tab">
+                        <h4 class="panel-title">
+                            学生管理
+                        </h4>
+                    </div>
+                    <!-- .panel-collapse和.collapse标明折叠元素 .in表示要显示出来 -->
+                    <div id="students" class="panel-collapse collapse in" role="tabpanel"
+                         aria-labelledby="student_manage">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <!--访问学生列表对应的方法所在的Controller-->
+                                <a href="http://localhost:8080/manager/students?currentPage=1"
+                                   target="_parent">显示所有学生信息</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="http://localhost:8080/manager/students/addition" target="_parent">添加学生</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="#">录入学生成绩</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div><!--panel end-->
+
+                <div class="panel panel-primary leftMenu">
+                    <div class="panel-heading" id="teacher_manage" data-toggle="collapse" data-target="#teachers"
+                         role="tab">
+                        <h4 class="panel-title">
+                            教师管理
+                        </h4>
+                    </div>
+                    <div id="teachers" class="panel-collapse collapse" role="tabpanel" aria-labelledby="teacher_manage">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <a href="#">显示所有教师信息</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="#">添加教师</a>
+                            </li>
+                            <li class="list-group-item">
+                                <a href="#">教师授课</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="panel panel-primary leftMenu">
+                    <div class="panel-heading" id="static_manage" data-toggle="collapse" data-target="#static"
+                         role="tab">
+                        <h4 class="panel-title">
+                            统计管理
+                        </h4>
+                    </div>
+
+                    <div id="static" class="panel-collapse collapse" role="tabpanel" aria-labelledby="static_manage">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <a href="http://localhost:8080/manager/statistic">显示统计报表</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--面包屑导航栏-->
+        <div class="col-md-10">
+            <ol class="breadcrumb" id="crumbs">
+                <li><a href="#">学生管理</a></li>
+            </ol>
+        </div>
+
+        <div id="page" align="center">
+
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $(".panel-heading").click(function (e) {
+            /*切换折叠指示图标*/
+            $(this).find("span").toggleClass("glyphicon-chevron-down");
+            $(this).find("span").toggleClass("glyphicon-chevron-up");
+        });
+    });
+</script>
+</body>
+</html>

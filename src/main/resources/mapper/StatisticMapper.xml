@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gdedu.system.dao.StatisticDao">
+    <select id="getCourseStatisticList" resultType="CourseStatistic">
+        /*注意查询的字段要和类的字段一致*/
+        SELECT
+        c.cname,
+        convert(avg(score), DECIMAL(10, 2)) avgScore,
+        convert(max(score), DECIMAL(10, 2)) maxScore,
+        convert(min(score), DECIMAL(10, 2)) minScore
+        FROM course c, sc s
+        WHERE c.cno = s.cno
+        GROUP BY c.cname
+    </select>
+
+    <select id="getStudentStatisticList" resultType="StudentStatistic">
+        SELECT
+        s.sname,
+        sum(ccredit) totalCredit
+        FROM student s, sc, course c
+        WHERE s.sno = sc.sno AND sc.cno = c.cno
+        GROUP BY s.sno, s.sname
+    </select>
+
+    <select id="getTeacherStatisticList" resultType="TeacherStatistic">
+        SELECT
+        ttitle,
+        count(*) count,
+        convert(avg(tsalary), DECIMAL(10, 2)) avgTsalary
+        FROM teacher
+        GROUP BY ttitle
+    </select>
+
+</mapper>

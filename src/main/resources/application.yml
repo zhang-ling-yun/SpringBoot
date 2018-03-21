@@ -1,0 +1,48 @@
+#Spring Profiles
+spring:
+  #Datasource
+  datasource:
+    #使用druid数据源
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    druid:
+      url: jdbc:mysql://localhost:3306/school?characterEncoding=UTF8&useSSL=false
+      username: root
+      password: zlyxhjsx
+      #初始化大小，最小，最大
+      initial-size: 15
+      min-idle: 5
+      max-active: 50
+      #配置获取连接等待超时的时间
+      max-wait: 60000
+      #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      time-between-eviction-runs-millis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      min-evictable-idle-time-millis: 300000
+
+  #thymeleaf配置
+  thymeleaf:
+    #prefix: classpath:/templates/
+    #suffix: .html
+    #可以简化HTML的编写
+    #encoding: UTF-8
+    mode: LEGACYHTML5
+    cache: false
+
+mybatis:
+  type-aliases-package: com.gdedu.system.domain
+  mapper-locations: classpath:mapper/*.xml
+
+#端口号默认就是8080
+server:
+  port: 8080
+
+#分页
+#pagehelper:
+  #helper-dialect: mysql
+  #reasonable: true
+  #support-methods-arguments: true
+  #params: count=countSql
+
+
+

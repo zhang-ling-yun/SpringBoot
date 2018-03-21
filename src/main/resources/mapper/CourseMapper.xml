@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gdedu.system.dao.CourseDao">
+    <select id="list" resultType="Course">
+        SELECT *
+        FROM course
+    </select>
+
+    <select id="findCoursesByCnameOrCno" resultType="Course">
+        SELECT *
+        FROM course
+        WHERE cname LIKE concat('%', #{cname}, '%') OR cno = #{cno}
+    </select>
+
+    <select id="findCourseByCname" resultType="Course">
+        SELECT *
+        FROM course
+        WHERE cname LIKE CONCAT('%', #{cname}, '%')
+    </select>
+
+    <select id="findCourseByCno" resultType="Course">
+        SELECT *
+        FROM course
+        WHERE cno = #{cno}
+    </select>
+
+    <update id="updateCourse" parameterType="Course">
+        UPDATE course
+        SET cname = #{cname}, ccredit = #{ccredit}, cselected = #{cselected}, ctotal = #{ctotal}, tno = #{tno}
+    </update>
+
+    <delete id="deleteCourse">
+        DELETE FROM course
+        WHERE cno = #{cno}
+    </delete>
+
+    <insert id="insertCourse" parameterType="Course">
+        INSERT IGNORE INTO course (cname, ccredit, cselected, ctotal, tno) VALUES
+        (#{cname}, #{ccredit}, #{cselected}, #{ctotal}, #{tno})
+    </insert>
+</mapper>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gdedu.system.dao.StudentDao">
+    <select id="list" resultType="Student">
+        SELECT *
+        FROM student
+    </select>
+
+    <select id="findStudentsBySnameOrSno" resultType="Student">
+        SELECT *
+        FROM student
+        WHERE sname LIKE CONCAT('%', #{sname}, '%') OR sno = #{sno}
+    </select>
+
+    <select id="findOneBySno" resultType="Student">
+        SELECT *
+        FROM student
+        WHERE sno = #{sno}
+    </select>
+
+    <select id="findStudentsBySname" resultType="Student">
+        SELECT *
+        FROM student
+        WHERE sname LIKE CONCAT('%', #{sname}, '%')
+    </select>
+
+    <update id="updateStudent" parameterType="Student">
+        UPDATE student
+        SET sname = #{sname}, ssex = #{ssex}, sage = #{sage}, spwd = #{spwd}
+        WHERE sno = #{sno}
+    </update>
+
+    <insert id="insertStudent" parameterType="Student">
+        INSERT IGNORE INTO student (sno, sname, ssex, sage, spwd) VALUES
+        (#{sno}, #{sname}, #{ssex}, #{sage}, #{spwd})
+    </insert>
+
+    <delete id="deleteStudent">
+        DELETE FROM student
+        WHERE sno = #{sno}
+    </delete>
+
+</mapper>
